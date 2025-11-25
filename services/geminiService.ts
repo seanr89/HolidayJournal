@@ -4,6 +4,7 @@ import { Itinerary, TripFormData } from "../types";
 export const generateItinerary = async (formData: TripFormData): Promise<Itinerary> => {
   // Initialize the client inside the function to ensure process.env is ready and avoid top-level side effects
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  //console.log("API Key: ", process.env.API_KEY);
 
   const prompt = `
     Create a detailed ${formData.days}-day travel itinerary for ${formData.destination}.

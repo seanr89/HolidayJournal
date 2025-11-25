@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Itinerary, DayPlan, Activity } from '../types';
-import { MapPinIcon, ClockIcon, UtensilsIcon, CameraIcon, ChevronDownIcon, EditIcon, SparklesIcon } from './Icons';
+import { MapPinIcon, ClockIcon, UtensilsIcon, CameraIcon, ChevronDownIcon, EditIcon, SparklesIcon, DownloadIcon } from './Icons';
 
 interface ItineraryViewProps {
   itinerary: Itinerary;
@@ -53,13 +53,13 @@ interface DaySectionProps {
 }
 
 const DaySection = ({ dayPlan, isOpen, onToggle }: DaySectionProps) => {
-    // Local state for notes editing (simulated)
-    const [userNote, setUserNote] = useState(""); 
-    const [isEditing, setIsEditing] = useState(false);
+  // Local state for notes editing (simulated)
+  const [userNote, setUserNote] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
-    return (
+  return (
     <div className="mb-8 last:mb-0">
-      <button 
+      <button
         onClick={onToggle}
         className="w-full text-left group flex items-center justify-between bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-all border border-slate-100"
       >
@@ -87,27 +87,27 @@ const DaySection = ({ dayPlan, isOpen, onToggle }: DaySectionProps) => {
                 <ActivityCard activity={activity} />
               </div>
             ))}
-            
+
             {/* User Notes Section */}
-             <div className="relative bg-slate-50 border border-slate-200 border-dashed rounded-xl p-4 mt-4">
-                 <div className="flex justify-between items-center mb-2">
-                     <h5 className="text-sm font-semibold text-slate-700">Your Personal Notes</h5>
-                     <button onClick={() => setIsEditing(!isEditing)} className="text-teal-600 hover:text-teal-800">
-                         <EditIcon className="w-4 h-4" />
-                     </button>
-                 </div>
-                 {isEditing ? (
-                     <textarea 
-                        className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none"
-                        rows={3}
-                        placeholder="Add your own reminders here..."
-                        value={userNote}
-                        onChange={(e) => setUserNote(e.target.value)}
-                     />
-                 ) : (
-                    <p className="text-sm text-slate-500 italic">{userNote || "No personal notes added yet."}</p>
-                 )}
-             </div>
+            <div className="relative bg-slate-50 border border-slate-200 border-dashed rounded-xl p-4 mt-4">
+              <div className="flex justify-between items-center mb-2">
+                <h5 className="text-sm font-semibold text-slate-700">Your Personal Notes</h5>
+                <button onClick={() => setIsEditing(!isEditing)} className="text-teal-600 hover:text-teal-800">
+                  <EditIcon className="w-4 h-4" />
+                </button>
+              </div>
+              {isEditing ? (
+                <textarea
+                  className="w-full p-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent outline-none"
+                  rows={3}
+                  placeholder="Add your own reminders here..."
+                  value={userNote}
+                  onChange={(e) => setUserNote(e.target.value)}
+                />
+              ) : (
+                <p className="text-sm text-slate-500 italic">{userNote || "No personal notes added yet."}</p>
+              )}
+            </div>
 
           </div>
         </div>
@@ -127,32 +127,76 @@ export const ItineraryView = ({ itinerary, onReset }: ItineraryViewProps) => {
     }
   };
 
+  const downloadItinerary = () => {
+    let content = `# ${itinerary.tripTitle}\n\n`;
+    content += `**Destination:** ${itinerary.destination}\n`;
+    content += `**Duration:** ${itinerary.duration}\n`;
+    content += `**Budget:** ${itinerary.budgetLevel}\n`;
+    content += `**Vibe:** ${itinerary.overallVibe}\n\n`;
+    content += `---\n\n`;
+
+    itinerary.days.forEach(day => {
+      content += `## Day ${day.day}: ${day.title}\n`;
+      content += `*${day.summary}*\n\n`;
+      content += `### Activities\n`;
+
+      day.activities.forEach(activity => {
+        content += `- **${activity.time}** - ${activity.location} (${activity.type})\n`;
+        content += `  ${activity.description}\n`;
+        if (activity.notes) {
+          content += `  > Note: ${activity.notes}\n`;
+        }
+        content += `\n`;
+      });
+      content += `---\n\n`;
+    });
+
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${itinerary.tripTitle.replace(/\s+/g, '_')}_Itinerary.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 pb-20 animate-fade-in-up">
       {/* Header Card */}
       <div className="bg-white rounded-3xl shadow-xl p-8 lg:p-12 mb-12 border border-slate-100 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 -translate-x-1/2 translate-y-1/2"></div>
-        
+
         <div className="relative z-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-             <div>
-                <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-700 text-xs font-bold uppercase tracking-wider mb-3">
-                    {itinerary.duration} • {itinerary.budgetLevel} Budget
-                </span>
-                <h1 className="font-serif text-4xl lg:text-5xl font-bold text-slate-900 mb-2">
-                    {itinerary.tripTitle}
-                </h1>
-                <p className="text-slate-500 text-lg flex items-center gap-2">
-                    <MapPinIcon className="w-5 h-5" /> {itinerary.destination}
-                </p>
-             </div>
-             <button 
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-700 text-xs font-bold uppercase tracking-wider mb-3">
+                {itinerary.duration} • {itinerary.budgetLevel} Budget
+              </span>
+              <h1 className="font-serif text-4xl lg:text-5xl font-bold text-slate-900 mb-2">
+                {itinerary.tripTitle}
+              </h1>
+              <p className="text-slate-500 text-lg flex items-center gap-2">
+                <MapPinIcon className="w-5 h-5" /> {itinerary.destination}
+              </p>
+            </div>
+            <div className="flex gap-3 self-start md:self-center">
+              <button
+                onClick={downloadItinerary}
+                className="px-6 py-3 rounded-xl bg-teal-600 text-white font-medium hover:bg-teal-700 transition-colors flex items-center gap-2 shadow-lg shadow-teal-200"
+              >
+                <DownloadIcon className="w-5 h-5" />
+                Download
+              </button>
+              <button
                 onClick={onReset}
-                className="px-6 py-3 rounded-xl bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 transition-colors self-start md:self-center"
-            >
+                className="px-6 py-3 rounded-xl bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 transition-colors"
+              >
                 Plan New Trip
-             </button>
+              </button>
+            </div>
           </div>
 
           <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
@@ -165,13 +209,13 @@ export const ItineraryView = ({ itinerary, onReset }: ItineraryViewProps) => {
       {/* Timeline */}
       <div className="relative">
         <div className="absolute left-[2.6rem] top-8 bottom-8 w-0.5 bg-slate-200 hidden md:block" />
-        
+
         {itinerary.days.map((day) => (
-          <DaySection 
-            key={day.day} 
-            dayPlan={day} 
-            isOpen={openDays.includes(day.day)} 
-            onToggle={() => toggleDay(day.day)} 
+          <DaySection
+            key={day.day}
+            dayPlan={day}
+            isOpen={openDays.includes(day.day)}
+            onToggle={() => toggleDay(day.day)}
           />
         ))}
       </div>
