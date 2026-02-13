@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { TripFormData } from '../types';
-import { PlaneIcon, SparklesIcon } from './Icons';
+import { PlaneIcon, SparklesIcon, MapPinIcon } from './Icons';
 
 interface HeroFormProps {
   onSubmit: (data: TripFormData) => void;
@@ -10,6 +11,7 @@ interface HeroFormProps {
 export const HeroForm: React.FC<HeroFormProps> = ({ onSubmit, isLoading }) => {
   const [formData, setFormData] = useState<TripFormData>({
     destination: '',
+    startingPoint: '',
     days: 3,
     budget: 'Moderate',
     travelers: 'Couple',
@@ -34,30 +36,46 @@ export const HeroForm: React.FC<HeroFormProps> = ({ onSubmit, isLoading }) => {
         </div>
 
       <div className="relative z-10 px-6 py-12 lg:px-16 flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-200 mb-6 animate-fade-in-down">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-200 mb-6">
           <SparklesIcon className="w-4 h-4" />
-          <span className="text-sm font-medium tracking-wide uppercase">AI-Powered Itineraries</span>
+          <span className="text-sm font-medium tracking-wide uppercase text-teal-300">Intelligent Itineraries</span>
         </div>
 
         <h1 className="text-4xl lg:text-6xl font-bold mb-6 tracking-tight leading-tight max-w-4xl">
-          Plan your dream trip <br className="hidden md:block"/> in <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-400">seconds</span>.
+          Your journey, <br className="hidden md:block"/> crafted with <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-blue-400">precision</span>.
         </h1>
 
         <p className="text-slate-300 text-lg max-w-2xl mb-12">
-          Tell us where you want to go, and our AI will craft a personalized, day-by-day itinerary tailored to your interests and budget.
+          Tell us where you are and where you want to be. Our AI calculates distances, finds links, and maps your path.
         </p>
 
-        <form onSubmit={handleSubmit} className="w-full max-w-4xl bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 lg:p-8 shadow-xl animate-fade-in-up transition-all duration-300 hover:bg-white/15">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <form onSubmit={handleSubmit} className="w-full max-w-5xl bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-6 lg:p-8 shadow-xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
             
-            {/* Destination */}
-            <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-1 text-left">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Destination</label>
+            {/* Starting Point */}
+            <div className="col-span-1 md:col-span-1 lg:col-span-1 space-y-1 text-left">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Starting From</label>
               <div className="relative">
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Kyoto, Japan"
+                  placeholder="Home or Hotel"
+                  value={formData.startingPoint}
+                  onChange={(e) => setFormData({ ...formData, startingPoint: e.target.value })}
+                  className="w-full bg-slate-800/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent placeholder-slate-500 transition-all"
+                />
+                <MapPinIcon className="absolute right-4 top-3.5 w-5 h-5 text-slate-500" />
+              </div>
+            </div>
+
+            {/* Destination */}
+            <div className="col-span-1 md:col-span-1 lg:col-span-1 space-y-1 text-left">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Heading To</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Kyoto"
                   value={formData.destination}
                   onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
                   className="w-full bg-slate-800/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent placeholder-slate-500 transition-all"
@@ -94,32 +112,29 @@ export const HeroForm: React.FC<HeroFormProps> = ({ onSubmit, isLoading }) => {
                 <option value="Friends" className="bg-slate-800">Friends</option>
               </select>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
              {/* Budget */}
              <div className="space-y-1 text-left">
               <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Budget</label>
-              <div className="flex rounded-xl bg-slate-800/50 p-1 border border-slate-600">
-                {['Budget', 'Moderate', 'Luxury'].map((level) => (
-                    <button
-                        key={level}
-                        type="button"
-                        onClick={() => setFormData({...formData, budget: level as any})}
-                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${formData.budget === level ? 'bg-slate-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
-                    >
-                        {level}
-                    </button>
-                ))}
-              </div>
+              <select
+                value={formData.budget}
+                onChange={(e) => setFormData({ ...formData, budget: e.target.value as any })}
+                className="w-full bg-slate-800/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent appearance-none transition-all"
+              >
+                <option value="Budget" className="bg-slate-800">Budget</option>
+                <option value="Moderate" className="bg-slate-800">Moderate</option>
+                <option value="Luxury" className="bg-slate-800">Luxury</option>
+              </select>
             </div>
+          </div>
 
+          <div className="mb-6">
             {/* Interests */}
              <div className="space-y-1 text-left">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Interests (Optional)</label>
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">Interests & Preferences</label>
               <input
                 type="text"
-                placeholder="History, Food, Hiking..."
+                placeholder="History, Local Food, Hiking, Hidden Gems..."
                 value={formData.interests}
                 onChange={(e) => setFormData({ ...formData, interests: e.target.value })}
                 className="w-full bg-slate-800/50 border border-slate-600 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent placeholder-slate-500 transition-all"
@@ -130,10 +145,10 @@ export const HeroForm: React.FC<HeroFormProps> = ({ onSubmit, isLoading }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg shadow-teal-900/20 flex items-center justify-center gap-2
+            className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg flex items-center justify-center gap-2
               ${isLoading 
                 ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-400 text-white hover:shadow-teal-500/30 transform hover:-translate-y-0.5'
+                : 'bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-400 text-white transform hover:-translate-y-0.5'
               }`}
           >
             {isLoading ? (
@@ -142,12 +157,12 @@ export const HeroForm: React.FC<HeroFormProps> = ({ onSubmit, isLoading }) => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Generative AI is Thinking...
+                Drafting your journey...
               </>
             ) : (
               <>
                 <SparklesIcon className="w-5 h-5" />
-                Generate Itinerary
+                Plan Adventure
               </>
             )}
           </button>
