@@ -9,6 +9,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  //console log env settings
+  console.log('API KEY', process.env.API_KEY);
+
   const handleFormSubmit = async (data: TripFormData) => {
     setLoading(true);
     setError(null);
@@ -30,22 +33,22 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-        {/* Navbar */}
-        <nav className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold font-serif">
-                        W
-                    </div>
-                    <span className="font-serif font-bold text-xl text-slate-800 tracking-tight">Wanderlust</span>
-                </div>
-                <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-                    <a href="#" className="hover:text-teal-600 transition-colors">Destinations</a>
-                    <a href="#" className="hover:text-teal-600 transition-colors">Saved Trips</a>
-                    <a href="#" className="hover:text-teal-600 transition-colors">About</a>
-                </div>
+      {/* Navbar */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-teal-400 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold font-serif">
+              W
             </div>
-        </nav>
+            <span className="font-serif font-bold text-xl text-slate-800 tracking-tight">Wanderlust</span>
+          </div>
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+            <a href="#" className="hover:text-teal-600 transition-colors">Destinations</a>
+            <a href="#" className="hover:text-teal-600 transition-colors">Saved Trips</a>
+            <a href="#" className="hover:text-teal-600 transition-colors">About</a>
+          </div>
+        </div>
+      </nav>
 
       <main className="pt-6">
         {error && (
@@ -66,14 +69,14 @@ function App() {
         )}
       </main>
 
-        {/* Footer */}
-        <footer className="bg-white border-t border-slate-200 py-12 mt-12">
-            <div className="max-w-7xl mx-auto px-4 text-center">
-                <p className="text-slate-400 text-sm">
-                    Powered by Gemini 2.5 Flash • Made with ❤️ by Wanderlust AI
-                </p>
-            </div>
-        </footer>
+      {/* Footer */}
+      <footer className="bg-white border-t border-slate-200 py-12 mt-12">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-slate-400 text-sm">
+            Powered by Gemini 2.5 Flash • Made with ❤️ by Wanderlust AI
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export const generateItinerary = async (formData: TripFormData): Promise<Itinera
   `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-3-pro-preview',
+    model: 'gemini-3-flash-preview',
     contents: prompt,
     config: {
       tools: [{ googleSearch: {} }],
